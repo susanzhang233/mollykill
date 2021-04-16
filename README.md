@@ -55,14 +55,21 @@ However, applying the model to covid-19 is only under thought process stage for 
  - database management(I believe the lectures about sql is enough, as I render precise data selection before putting into the model for construction to be also important)
  - ChemicalChecker, a package that creates a chemical space that vectorize molecules, also able to predict the vector representation of an unpresent molecule in the space, might be used for data selection or else. https://chemicalchecker.org/
  - RDkit, a useful package for extracting biochemical features of a molecule. https://rdkit.org/docs/api-docs.html
- - dgl life-sci, graph neural network package that could be applied to lifescience elements https://lifesci.dgl.ai/index.html
+ - dgl life-sci, graph neural network package that could be applied to life science elements https://lifesci.dgl.ai/index.html 
  - tensorflow, would help in creating graphic neural network models(hope to learn more about them in lectures)
 
 ### Risks
 
+ - the data obtained/after preprocessing, might not have enough biochemically explainable power to be considered reasonable. For example, if the model indicates that, the most significant factors to consider for inhibitor of this protein is something like molecules' bond angles, or related biological pathways, these factors are commonly not considered as the most important factors for inhibitors.
+ - the rewarding function might not be able to pick out any candidate inhibitor for the protein from the pool of molecules. In this case, we might want to lower the selection cutoff of the model, or to include more molecules into the pool. Or, if it is an issue resulted from previous training process, we might want to reconsider how and what are taken into the training model.
+ - Numerical/graphical representation used in the model might require more computational knowledge
+ - Building the model might also require more math knowledge(linear algebra/probability).
+
+
+
 ### Ethics
 
-
+As far as now, I still won’t expect this project to work with datasets that are directly related to humans. However, some bias might be introduced to the model if molecules in the training set have varying inhibition power. Yet, for a drug to be made available to the public, an intensive amount of extra investigation is needed. Some bias related to humans might involve how the drug has varying dose dependent effects. These bias could be mitigated during further biochemical assays, and is currently thought to be not directly related to the computation stage that this model is in. Therefore, I think this project, if successfully carried out, might provide some interesting new thoughts about drug design, but I definitely don’t believe that the resulted molecules of this project could be immediately put into use as drugs. Some pedagogic benefits are also foreseeable.
 
 
 
