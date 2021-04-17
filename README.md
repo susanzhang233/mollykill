@@ -96,7 +96,7 @@ As far as now, I still won’t expect this project to work with datasets that ar
 
 
 
-| Model     | Nicely done | Some aspects that could be improved    | link |
+| Models     | Nicely done | Some aspects that could be improved    | link |
 | :---        |    :----:   |      :----:   |      ---: |
-| Header      | Title       | Here's this   |
+| GENTRL      | Title       | Here's this   |
 | Paragraph   | Text        | And more      |
