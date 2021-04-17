@@ -8,7 +8,7 @@
 
 ### Abstract
 
-This project is aimed to building a model that would aid drug design processes. The project is expected to use machine learning models to determine the inhibition patterns for a specific protein(what biochemical factors contributes more to have the protein inhibited, solubility? binding energy? etc). The model should develope a reasonable way to learn molecules either graphically or numerically. Then, it would check over a larger dataset of molecules to look for some molecules that might work as a novel inhibitor for the protein.
+This project is aimed to building a model that would aid drug design processes. The project is expected to use machine learning models to determine the inhibition patterns for a specific protein(what biochemical factors contributes more to have the protein inhibited, solubility? binding energy? etc). The model should develop a reasonable way to learn molecules either graphically or numerically. Then, it would check over a larger dataset of molecules to look for some molecules that might work as a novel inhibitor for the protein.
 
 ### Planned Deliverables
 
@@ -96,7 +96,7 @@ As far as now, I still won’t expect this project to work with datasets that ar
 
 
 
-| Syntax      | Description | Test Text     |
-| :---        |    :----:   |          ---: |
+| Model     | Nicely done | Some aspects that could be improved    | link |
+| :---        |    :----:   |      :----:   |      ---: |
 | Header      | Title       | Here's this   |
 | Paragraph   | Text        | And more      |
