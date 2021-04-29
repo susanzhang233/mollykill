@@ -1,0 +1,8 @@
+,Name,Smiles,,,,
+1,Nilotinib,Cc1cn(-c2cc(NC(=O)c3ccc(C)c(Nc4nccc(-c5cccnc5)n4)c3)cc(C(F)(F)F)c2)cn1,,,,
+2,Ponatinib,CCc1ccc(C(=O)Nc2cc(CN3CCN(C)CC3)cc(C(F)(F)F)c2)cc1C#Cc1ccc2ccnn2c1,Cc1ccc(C(=O)Nc2ccc(CN3CCN(C)CC3)c(C(F)(F)F)c2)cc1C#Cc1cnc2cccnn12,,,
+3,BAFETINIB,Cc1ccc(NC(=O)c2ccc(CN3CC[C@H](N(C)C)C3)c(C(F)(F)F)c2)cc1Nc1nccc(-c2cncnc2)n1,,,,
+4,IMATINIB,Cc1ccc(NC(=O)c2ccc(CN3CCN(C)CC3)cc2)cc1Nc1nccc(-c2cccnc2)n1,,,,
+5,LCB 03-0110,Oc1cccc(Nc2ccnc3cc(-c4cccc(CN5CCOCC5)c4)sc23)c1,,,,
+6,7Hr,CCN1CCN(Cc2ccc(C(=O)Nc3ccc(C)c(Oc4ccc5c(c4)CC(=O)N5)c3)cc2C(F)(F)F)CC1,,,,
+7,Dasatinib,Cc1nc(Nc2ncc(C(=O)Nc3c(C)cccc3Cl)s2)cc(N2CCN(CCO)CC2)n1,,,,
