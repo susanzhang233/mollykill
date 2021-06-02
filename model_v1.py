@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 
+from rdkit import Chem
+from rdkit.Chem import AllChem
 
 
 
-
-def featurizer(mol, max_length = 10):
+def featurizer( mol, max_length = 10):
     '''
   Parameters
   -------
@@ -20,7 +21,7 @@ def featurizer(mol, max_length = 10):
     nodes = []
     edges = []
   
- #initiate the encoder of bonds
+    #initiate the encoder of bonds
     bond_types = [
           Chem.rdchem.BondType.ZERO,
           Chem.rdchem.BondType.SINGLE,
@@ -39,8 +40,7 @@ def featurizer(mol, max_length = 10):
     #loop over the atoms to generate a matrix
         for j in range(max_length+1):
           #get each of the bonds
-          current_bond = mol.GetBondBetweenAtoms(i,j)
-    
+            current_bond = mol.GetBondBetweenAtoms(i,j)
             if current_bond == None:#some atoms are not connected
                 l.append(0)
             else:
@@ -169,8 +169,7 @@ def get_generator_loss(fake_predictions):
 
 def train_step(mol,old_gen_loss,old_disc_loss):
     fake_mol_noise = np.random.randn(batch_size, 100)# input for the generator
-  
-      with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
+    with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
 
         real_output = discriminator.evaluate(mol[:2])# trainable = False)
 
@@ -197,8 +196,8 @@ def train(nodes,edges, epochs):
         gen_loss = 0
         disc_loss = 0
         for n,e in zip(nodes, edges):
-        train = [n.reshape(1,11),e.reshape(1,11,11)]
-        train_step(train,gen_loss,disc_loss)
+            train = [n.reshape(1,11),e.reshape(1,11,11)]
+            train_step(train,gen_loss,disc_loss)
       #display.clear_output(wait=True)
     #if (epoch+1)
 
