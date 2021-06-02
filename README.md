@@ -9,6 +9,12 @@ This project is aimed to building a model that would aid drug design processes. 
 The [dataset](https://pubchem.ncbi.nlm.nih.gov/bioassay/1706) for training is obtained from pubchem, which contains a through screening for inhibitors of the protease.
 
 ### Limitations(Future work)
+- Currently, some generated molecules might not be viable. Therefore, some conditions for the generation might be added.
+- The dimension of the discriminator might be improved by adding more features of the molecules(ie. hybridization, stereochemistry, etc)
+
+
+
+
 
 ### Acknowledgements
 
@@ -17,6 +23,6 @@ The [dataset](https://pubchem.ncbi.nlm.nih.gov/bioassay/1706) for training is ob
 - https://github.com/whoIsTheGingerBreadMan/YoutubeVideos
 - https://machinelearningmastery.com/practical-guide-to-gan-failure-modes/
 
-
+-MolGAN
 
 
