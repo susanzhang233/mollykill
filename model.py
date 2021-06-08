@@ -60,10 +60,10 @@ def featurizer(mol, max_length = 10):
      
   return nodes, edges
   #return tf.data.Dataset.from_tensor_slices((
-        {
-            "nodes" : [nodes], 
-            "edges" : [edges]
-        } ) )
+        #{
+            #"nodes" : [nodes], 
+            #"edges" : [edges]
+        #} ) )
 
 def de_featurizer(nodes, edges):
   '''draw out a molecule
@@ -107,12 +107,12 @@ def de_featurizer(nodes, edges):
 
 """## Data Preparation"""
 
-def check_length(min):
+#def check_length(min):
   #'''this function checks the length of the molecules and eliminate those that are too short'''
-input_df = ihbt['smiles']
-df_length = []
-for _ in input_df:
-  df_length.append(Chem.MolFromSmiles(_).GetNumAtoms() )
+#input_df = ihbt['smiles']
+#df_length = []
+#for _ in input_df:
+  #df_length.append(Chem.MolFromSmiles(_).GetNumAtoms() )
 #input_df = input_df.apply(Chem.MolFromSmiles)
 #ihbt['length'] = input_df.apply(GetNumAtoms)
 
