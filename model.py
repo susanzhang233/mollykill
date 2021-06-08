@@ -8,6 +8,12 @@ Original file is located at
 
 ## Encoder & Decoder
 """
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import matplotlib.pyplot as plt
+import numpy as np
+from rdkit import Chem
 
 def featurizer(mol, max_length = 10):
   '''
@@ -128,25 +134,23 @@ def make_discriminator(num_atoms):
   '''
   # This is the one!
 
-  #conv_node = layers.Conv2D(
-      #32, (3, 3), activation='relu', input_shape=(10, None)
-  #)
-  conv_edge = layers.Conv1D(32, (3,), activation = 'relu', input_shape = (num_atoms,num_atoms))
-  edges_tensor = keras.Input(shape = (num_atoms,num_atoms), name = 'edges')
+  
+  conv_edge = tf.keras.layers.Conv1D(32, (3,), activation = 'relu', input_shape = (num_atoms,num_atoms))
+  edges_tensor = tf.keras.layers.Input(shape = (num_atoms,num_atoms), name = 'edges')
   x_edge = conv_edge(edges_tensor)
-  #x_edge = layers.MaxPooling1D((2,))(x_edge)
-  x_edge = layers.Conv1D(64, (3,), activation='relu')(x_edge)
-  x_edge = layers.Flatten()(x_edge)
-  x_edge = layers.Dense(64, activation = 'relu')(x_edge)
+  
+  x_edge = tf.keras.layers.Conv1D(64, (3,), activation='relu')(x_edge)
+  x_edge = tf.keras.layers.Flatten()(x_edge)
+  x_edge = tf.keras.layers.Dense(64, activation = 'relu')(x_edge)
 
-  nodes_tensor = keras.Input(shape = (num_atoms,), name = 'nodes' )
-  x_node = layers.Dense(32, activation = 'relu' )(nodes_tensor)
-  x_node = layers.Dropout(0.2)(x_node)
-  x_node = layers.Dense(64, activation = 'relu')(nodes_tensor)
+  nodes_tensor = tf.keras.layers.Input(shape = (num_atoms,), name = 'nodes' )
+  x_node = tf.keras.layers.Dense(32, activation = 'relu' )(nodes_tensor)
+  x_node = tf.keras.layers.Dropout(0.2)(x_node)
+  x_node = tf.keras.layers.Dense(64, activation = 'relu')(nodes_tensor)
 
-  main = layers.concatenate([x_node,x_edge], axis = 1)
-  main = layers.Dense(32, activation='relu')(main)
-  output = layers.Dense(1, activation = 'sigmoid', name = 'label')(main)# number of classes
+  main = tf.keras.layers.concatenate([x_node,x_edge], axis = 1)
+  main = tf.keras.layers.Dense(32, activation='relu')(main)
+  output = tf.keras.layers.Dense(1, activation = 'sigmoid', name = 'label')(main)# number of classes
 
   return keras.Model(
     inputs = [nodes_tensor, edges_tensor],
@@ -160,20 +164,19 @@ def make_discriminator(num_atoms):
 def make_generator(num_atoms, noise_input_shape):
   '''create generator model
   '''
-  inputs = keras.Input(shape = (noise_input_shape,))
-  x = layers.Dense(56, activation="tanh")(inputs)# input_shape = (noise_input_shape,) )#256: filters
-  #x = layers.Dropout(0.2)(x)
-  x = layers.Dense(56,activation="tanh")(x)
-  #x = layers.Dropout(0.2)(x)
-  x = layers.Dense(56,activation="tanh")(x)
+  inputs = tf.keras.layers.Input(shape = (noise_input_shape,))
+  x = tf.keras.layers.Dense(56, activation="tanh")(inputs)# input_shape = (noise_input_shape,) )#256: filters
+ 
+  x = tf.keras.layers.Dense(56,activation="tanh")(x)
+
+  x = tf.keras.layers.Dense(56,activation="tanh")(x)
 
   #generating edges
-  edges_gen = layers.Dense(units =num_atoms*num_atoms)(x)
-  edges_gen = layers.Reshape((num_atoms, num_atoms ))(edges_gen)
+  edges_gen = tf.keras.layers.Dense(units =num_atoms*num_atoms)(x)
+  edges_gen = tf.keras.layers.Reshape((num_atoms, num_atoms ))(edges_gen)
 
-  nodes_gen = layers.Dense(units = num_atoms)(x)
-  #assert nodes_gen.output_shape == (num_atoms)
-  #nodes_gen = layers.Reshape(num_atoms, num_atoms)(edges_gen)
+  nodes_gen = tf.keras.layers.Dense(units = num_atoms)(x)
+ 
 
   #y = zeros(())
   return keras.Model(
@@ -196,8 +199,8 @@ def make_gan(disc, gene, num_atom, noise_input_shape):
   #generator = make_generator(num_atom, noise_input_shape)
 
     ### GAN 
-  inputs = keras.Input(shape = (noise_input_shape,))
-  gan = generator(inputs)
+  inputs = tf.keras.layers.Input(shape = (noise_input_shape,))
+  gan = gene(inputs)
   gan = disc(gan)
 
   model = keras.Model(
@@ -226,7 +229,7 @@ def plot_history(d1_hist, d2_hist, g_hist, a1_hist, a2_hist):
 	#pyplot.savefig('results_collapse/plot_line_plot_loss.png')
 	#plt.close()
 
-def train_batch(disc, gene, nodes, edges, noise_input_shape, EPOCH = 2, BATCHSIZE = 128, plot_hist = True, temp_result = False):
+def train_batch(disc, gene, nodes, edges, noise_input_shape, EPOCH = 150, BATCHSIZE = 2, plot_hist = True, temp_result = False):
   #calculate the number of batches per epoch
   batch_per_epoch = int(len(nodes) / BATCHSIZE)
   # number of samples for half a batch
