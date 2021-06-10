@@ -20,7 +20,7 @@ def featurizer(mol, max_length = 10):
   Encodes molecules into 
   Parameters
   -------
-  mol: rdkit molecule object(rdkit.Chem.rdchem.Mol)/smiles
+  mol: rdkit molecule object(rdkit.Chem.rdchem.Mol)
   max_length: max_length of atoms of the molecules to accept
 
   Returns
@@ -71,6 +71,7 @@ def featurizer(mol, max_length = 10):
             #"edges" : [edges]
         #} ) )
 
+##########################################################################
 def de_featurizer(nodes, edges):
   '''draw out a molecule
   '''
