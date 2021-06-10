@@ -17,8 +17,9 @@ from rdkit import Chem
 
 def featurizer(mol, max_length = 10):
   '''
-  Encodes molecules into 
-  Parameters
+  Encodes molecules into graph representaions with nodes and edges.
+  
+  Parameters:
   -------
   mol: rdkit molecule object(rdkit.Chem.rdchem.Mol)
   max_length: max_length of atoms of the molecules to accept
@@ -72,11 +73,21 @@ def featurizer(mol, max_length = 10):
         #} ) )
 
 ##########################################################################
+
 def de_featurizer(nodes, edges):
-  '''draw out a molecule
+  '''Draw out a molecule based on the molecules's graph representation with nodes and edges.
+      
+     Paramenters:
+     ------
+     nodes: an array of the molecule with atomic numbers
+     edges: a matrix containing bond information between each atom of the molecule
+     
+     Return:
+     ------
+     two possible rdkit molecules(since the generated molecule graph's edges contains diagonally two possibilities of bond            informations
   '''
  
-  mol1 = Chem.RWMol()
+  mol1 = Chem.RWMol()#initiate two molecules
   mol2 = Chem.RWMol()
   
   bond_types = [
@@ -86,14 +97,14 @@ def de_featurizer(nodes, edges):
           Chem.rdchem.BondType.TRIPLE,
           Chem.rdchem.BondType.AROMATIC,
         ]
-  decoder = {i:j for i, j in enumerate(bond_types,1)}
+  decoder = {i:j for i, j in enumerate(bond_types,1)}# create decoder of bondtype corresponding with numbers
 
   #create atoms
   for atom in nodes:
     mol1.AddAtom( Chem.Atom( int(atom)) )
     mol2.AddAtom( Chem.Atom( int(atom)) )
     
-  #defeaturize bonds with the matrix
+  #loop through the matrix to defeaturize bonds
   #mol2 = mol1
   for a in range(len(edges)-1):
     #for b in range(a+1, len(edges)):
@@ -112,6 +123,8 @@ def de_featurizer(nodes, edges):
 
   return mol1, mol2
 
+##########################################################################
+
 """## Data Preparation"""
 
 #def check_length(min):
@@ -127,15 +140,23 @@ def de_featurizer(nodes, edges):
 
 ## Discriminator
 """
+##########################################################################
 
 def make_discriminator(num_atoms):
   '''
   create a discriminator model that takes in two inputs: nodes and edges of a single molecule
-  graphic neural network
-  '''
-  # This is the one!
-
   
+  Parameter:
+  ------
+  num_atoms: the specific length of molecules to consider
+  
+  Return:
+  ------
+  A functional keras convolutional 1D graphic neural network model for molcule graphs, with inputs being nodes and edges, output being the possible label
+  
+  '''
+ 
+  # gnn part for learning edges matrix features
   conv_edge = tf.keras.layers.Conv1D(32, (3,), activation = 'relu', input_shape = (num_atoms,num_atoms))
   edges_tensor = tf.keras.layers.Input(shape = (num_atoms,num_atoms), name = 'edges')
   x_edge = conv_edge(edges_tensor)
@@ -144,6 +165,7 @@ def make_discriminator(num_atoms):
   x_edge = tf.keras.layers.Flatten()(x_edge)
   x_edge = tf.keras.layers.Dense(64, activation = 'relu')(x_edge)
 
+  # dense layer part for nodes array features
   nodes_tensor = tf.keras.layers.Input(shape = (num_atoms,), name = 'nodes' )
   x_node = tf.keras.layers.Dense(32, activation = 'relu' )(nodes_tensor)
   x_node = tf.keras.layers.Dropout(0.2)(x_node)
@@ -151,20 +173,33 @@ def make_discriminator(num_atoms):
 
   main = tf.keras.layers.concatenate([x_node,x_edge], axis = 1)
   main = tf.keras.layers.Dense(32, activation='relu')(main)
-  output = tf.keras.layers.Dense(1, activation = 'sigmoid', name = 'label')(main)# number of classes
+  output = tf.keras.layers.Dense(1, activation = 'sigmoid', name = 'label')(main)#binary classfication task with sigmoid as the activation
 
   return keras.Model(
     inputs = [nodes_tensor, edges_tensor],
     outputs = output
     )
 
+##########################################################################
+
 """## Generator
 
 """
 
 def make_generator(num_atoms, noise_input_shape):
-  '''create generator model
   '''
+  create a generator model that generates graphic data with noise inputs
+  
+  Parameter:
+  ------
+  num_atoms: the specific length of molecules to consider
+  noise_input_shape: shape of the noise input to supply to the generative network
+  
+  Return:
+  ------
+  A functional keras neural network model for generating molcule graphs of nodes and edges, with inputs being random noise, output being nodes and edges tensors.
+  '''
+  #start off with some dense layers
   inputs = tf.keras.layers.Input(shape = (noise_input_shape,))
   x = tf.keras.layers.Dense(56, activation="tanh")(inputs)# input_shape = (noise_input_shape,) )#256: filters
  
@@ -175,7 +210,8 @@ def make_generator(num_atoms, noise_input_shape):
   #generating edges
   edges_gen = tf.keras.layers.Dense(units =num_atoms*num_atoms)(x)
   edges_gen = tf.keras.layers.Reshape((num_atoms, num_atoms ))(edges_gen)
-
+   
+  #generating nodes
   nodes_gen = tf.keras.layers.Dense(units = num_atoms)(x)
  
 
@@ -186,20 +222,30 @@ def make_generator(num_atoms, noise_input_shape):
     )
 
   #return [nodes_gen, edges_gen]
+    
+##########################################################################
 
 """## GAN"""
 
 def make_gan(disc, gene, num_atom, noise_input_shape):
-  #discriminator = make_discriminator(num_atom)
+  '''
+  create a GAN model combining the discriminator with the generator
+  
+  Parameter:
+  ------
+  disc: discriminator model to train
+  gene: generator model to train
+  num_atoms: the specific length of molecules to consider
+  noise_input_shape: shape of the noise input to supply to the generative network
+  
+  Return:
+  ------
+  A compiled functional keras neural network GAN model for generating molcule graphs of nodes and edges, with inputs being random noise, output being nodes and edges tensors. Upon training, the model would be more likely to generator graphs that are similar yet new to the supplied dataset.
+  '''  
+  #make discriminator untrainable so that the fake labels would not back propagate the discriminator's accuracy
   disc.trainable = False
-    # compile discriminator
-  #discriminator.compile(loss='binary_crossentropy', optimizer=Adam(lr=0.0002), metrics=['mae'])
-
-    ### generator
-    # do not compile generator
-  #generator = make_generator(num_atom, noise_input_shape)
-
-    ### GAN 
+    
+  ### GAN: input being random noise, combining generator with the discriminator
   inputs = tf.keras.layers.Input(shape = (noise_input_shape,))
   gan = gene(inputs)
   gan = disc(gan)
@@ -215,6 +261,16 @@ def make_gan(disc, gene, num_atom, noise_input_shape):
 """## Training"""
 
 def plot_history(d1_hist, d2_hist, g_hist, a1_hist, a2_hist):
+    """the function plots the loss and accuracy of the model during training process
+    
+    Parameters:
+    --------
+    d1_hist: discriminator's loss on the real data(number of average times with a batch that it classifies a real image as fake)
+    d2_hist: discriminator's loss with the generated data(number of average times with a batch that it classifies a fake image as real)(desired!)
+    g_hist: generator's loss(updated with the combined GAN model via the discriminator's error)
+    a1_hist: discriminator's accuracy on the real data
+    a2_hist:discriminator's accuracy with the generated data
+    """
 	# plot loss
 	plt.subplot(2, 1, 1)
 	plt.plot(d1_hist, label='d-real')
@@ -231,6 +287,31 @@ def plot_history(d1_hist, d2_hist, g_hist, a1_hist, a2_hist):
 	#plt.close()
 
 def train_batch(disc, gene, nodes, edges, noise_input_shape, EPOCH = 150, BATCHSIZE = 2, plot_hist = True, temp_result = False):
+  """
+  training function for the GAN model
+  
+  Parameters:
+  ---------
+  disc: discriminator model to train
+  gene: generator model to train
+  
+  nodes: nodes training set
+  edges: edges training set
+  
+  noise_input_shape: shape of the noise input to supply to the generative network
+  EPOCH: desired training epochs
+  BATHSZIE: desired batchsize
+  
+  plot_hist: wether to plot the summary of loss and accuracy during training
+  temp_result: wether to generate some results for observation within interval of epochs during training
+  
+  Return:
+  --------
+  gene: A trained generator model
+  
+  
+  """
+
   #calculate the number of batches per epoch
   batch_per_epoch = int(len(nodes) / BATCHSIZE)
   # number of samples for half a batch
@@ -277,13 +358,13 @@ def train_batch(disc, gene, nodes, edges, noise_input_shape, EPOCH = 150, BATCHS
     a1_hist.append(d_acc1)
     a2_hist.append(d_acc2)
     
+    #for an epoch interval of 20, test the generator's performance
     if _%20 ==0:
       if temp_result == True:
         no, ed = gene(np.random.randint(0,20, size =(1,100)))
         m1, m2 = de_featurizer(abs(no.numpy()).astype(int).reshape(num_atoms), abs(ed.numpy()).astype(int).reshape(num_atoms,num_atom))
         print(Chem.MolToSmiles(m1) )
         print(Chem.MolToSmiles(m2) )
-			#summarize_performance(i, g_model, latent_dim)
 
     i+=half_batch
 
