@@ -16,7 +16,7 @@ The dataset is also hosted in the [data folder](https://github.com/susanzhang233
 
 ## Repository Explaination
 - [`model.py`](https://github.com/susanzhang233/mollykill/blob/main/model.py) contains the source codes for the GAN model created
--[`example.ipynb`](https://github.com/susanzhang233/mollykill/blob/main/example.ipynb) is an example usage in pipeline of the model
+- [`example.ipynb`](https://github.com/susanzhang233/mollykill/blob/main/example.ipynb) is an example usage in pipeline of the model
 
 
 
