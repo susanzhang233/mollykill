@@ -19,20 +19,18 @@ The dataset is also hosted in the [data folder](https://github.com/susanzhang233
 
 
 ### Limitations(Future work)
-- Currently, the generation of molecules is limited to a specific length that is shorter than most molecules in the real world. Future work involving some concepts of 
+- Currently, the generation of molecules is limited to a specific length that is shorter than most molecules in the real world. Future work involving some concepts of Conditional GAN might be employed.
 - The dimension of the discriminator might be improved by adding more features of the molecules(ie. hybridization, stereochemistry, etc)
-
-
+- The efficiency of the featurizer in treating edges informations might be improved(viable representation of rings, etc)
 
 
 
 ### Acknowledgements
 
+- Where I've obtained my dataset: https://github.com/yangkevin2/coronavirus_data/tree/master/data 
+- A nice introduction video of GAN structure: https://github.com/whoIsTheGingerBreadMan/YoutubeVideos
+- A nice introduction blogpost: https://machinelearningmastery.com/how-to-develop-a-conditional-generative-adversarial-network-from-scratch/
 
-- https://github.com/yangkevin2/coronavirus_data/tree/master/data
-- https://github.com/whoIsTheGingerBreadMan/YoutubeVideos
-- https://machinelearningmastery.com/practical-guide-to-gan-failure-modes/
-
--MolGAN
+- MolGAN, a great previous work of related field: https://arxiv.org/pdf/1805.11973.pdf
 
 
