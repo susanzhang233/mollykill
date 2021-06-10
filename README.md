@@ -7,6 +7,7 @@ This project is aimed to building a Graphic GAN model that would aid drug design
 
 #### Intro to GAN
 ![Screen Shot 2021-06-08 at 7 40 49 PM](https://user-images.githubusercontent.com/67823308/121478869-0a7f7980-c9fc-11eb-99b0-b5ab283cd386.png)
+
 GAN, standing for Generative Adversarial Network, is commonly used in graphic works and more, such as generation of faces, music pieces. Here's a great [introduction](https://machinelearningmastery.com/what-are-generative-adversarial-networks-gans/). In this project, we'll be building a GAN model that ultilizes the mthematical concepts of graphs in the chemical world.
 
 ## Dataset
