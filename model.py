@@ -13,7 +13,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
 import numpy as np
-from rdkit import Chem
+#from rdkit import Chem
 
 def featurizer(mol, max_length = 10):
   '''
@@ -109,12 +109,12 @@ def de_featurizer(nodes, edges):
   for a in range(len(edges)-1):
     #for b in range(a+1, len(edges)):
     b=a+1
-    if 0< edges[int(a)][int(b)] <6:
+    if 1< edges[int(a)][int(b)] <6:
       mol1.AddBond(int(a),int(b), decoder.get(edges[int(a)][int(b)]))
     else:
       mol1.AddBond(int(a),int(b), Chem.rdchem.BondType.SINGLE)
     
-    if 0< edges[int(b)][int(a)] <6:
+    if 1< edges[int(b)][int(a)] <6:
       mol2.AddBond(int(a),int(b), decoder.get(edges[int(b)][int(a)]))
     else:
       mol2.AddBond(int(a),int(b), Chem.rdchem.BondType.SINGLE)
@@ -157,11 +157,11 @@ def make_discriminator(num_atoms):
   '''
  
   # gnn part for learning edges matrix features
-  conv_edge = tf.keras.layers.Conv1D(32, (3,), activation = 'relu', input_shape = (num_atoms,num_atoms))
-  edges_tensor = tf.keras.layers.Input(shape = (num_atoms,num_atoms), name = 'edges')
+  conv_edge = tf.keras.layers.Conv2D(32, (3,3), activation = 'relu', input_shape = (num_atoms,num_atoms,1))
+  edges_tensor = tf.keras.layers.Input(shape = (num_atoms,num_atoms,1), name = 'edges')
   x_edge = conv_edge(edges_tensor)
   
-  x_edge = tf.keras.layers.Conv1D(64, (3,), activation='relu')(x_edge)
+  x_edge = tf.keras.layers.Conv2D(64, (3,3), activation='relu')(x_edge)
   x_edge = tf.keras.layers.Flatten()(x_edge)
   x_edge = tf.keras.layers.Dense(64, activation = 'relu')(x_edge)
 
@@ -271,20 +271,20 @@ def plot_history(d1_hist, d2_hist, g_hist, a1_hist, a2_hist):
     a1_hist: discriminator's accuracy on the real data
     a2_hist:discriminator's accuracy with the generated data
     """
-	# plot loss
-	plt.subplot(2, 1, 1)
-	plt.plot(d1_hist, label='d-real')
-	plt.plot(d2_hist, label='d-fake')
-	plt.plot(g_hist, label='gen')
-	plt.legend()
-	# plot discriminator accuracy
-	plt.subplot(2, 1, 2)
-	plt.plot(a1_hist, label='acc-real')
-	plt.plot(a2_hist, label='acc-fake')
-	plt.legend()
-	# save plot to file
-	#pyplot.savefig('results_collapse/plot_line_plot_loss.png')
-	#plt.close()
+# plot loss
+    plt.subplot(2, 1, 1)
+    plt.plot(d1_hist, label='d-real')
+    plt.plot(d2_hist, label='d-fake')
+    plt.plot(g_hist, label='gen')
+    plt.legend()
+# plot discriminator accuracy
+    plt.subplot(2, 1, 2)
+    plt.plot(a1_hist, label='acc-real')
+    plt.plot(a2_hist, label='acc-fake')
+    plt.legend()
+# save plot to file
+#pyplot.savefig('results_collapse/plot_line_plot_loss.png')
+#plt.close()
 
 def train_batch(disc, gene, nodes, edges, noise_input_shape, EPOCH = 150, BATCHSIZE = 2, plot_hist = True, temp_result = False):
   """
