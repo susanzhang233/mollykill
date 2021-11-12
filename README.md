@@ -3,7 +3,7 @@
 
 ## Introduction
 
-This project is aimed to building a Graphic GAN model that would aid drug design processes. For demonstration, the project is expected to learn graphical features of the molecules that are believed to have inhibition effect for the specific protein SARS coronavirus 3C-like Protease (3CLPro) . Then, the model would develop a reasonable way to generate potential novel molecules inhibitors' graphically representations. After that, with a defeaturizer, the graphical representations would be converted into visualizable molecule formats. 
+This project is aimed to build a Graphic GAN model that would aid drug design processes. For demonstration, the project is expected to learn graphical features of the molecules that are believed to have inhibition effect for the specific protein SARS coronavirus 3C-like Protease (3CLPro) . Then, the model would develop a reasonable way to generate potential novel molecules inhibitors' graphically representations. After that, with a defeaturizer, the graphical representations would be converted into visualizable molecule formats. 
 
 #### Intro to GAN
 ![Screen Shot 2021-06-08 at 7 40 49 PM](https://user-images.githubusercontent.com/67823308/121478869-0a7f7980-c9fc-11eb-99b0-b5ab283cd386.png)
