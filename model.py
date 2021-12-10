@@ -13,7 +13,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 import matplotlib.pyplot as plt
 import numpy as np
-#from rdkit import Chem
+from rdkit import Chem
 
 def featurizer(mol, max_length = 10):
   '''
@@ -44,7 +44,7 @@ def featurizer(mol, max_length = 10):
           Chem.rdchem.BondType.TRIPLE,
           Chem.rdchem.BondType.AROMATIC,
         ]
-  encoder = {j:i for i, j in enumerate(bond_types,1)} #a dict with keys being rdkit bondtype, values being numbers from 1-5
+  encoder = {j:i for i, j in enumerate(bond_types,0)} #a dict with keys being rdkit bondtype, values being numbers from 1-5
   
   #loop over the atoms within max_length
   for i in range(max_length):
@@ -97,7 +97,7 @@ def de_featurizer(nodes, edges):
           Chem.rdchem.BondType.TRIPLE,
           Chem.rdchem.BondType.AROMATIC,
         ]
-  decoder = {i:j for i, j in enumerate(bond_types,1)}# create decoder of bondtype corresponding with numbers
+  decoder = {i:j for i, j in enumerate(bond_types,0)}# create decoder of bondtype corresponding with numbers
 
   #create atoms
   for atom in nodes:
@@ -109,12 +109,12 @@ def de_featurizer(nodes, edges):
   for a in range(len(edges)-1):
     #for b in range(a+1, len(edges)):
     b=a+1
-    if 1< edges[int(a)][int(b)] <6:
+    if 0< edges[int(a)][int(b)] <6:
       mol1.AddBond(int(a),int(b), decoder.get(edges[int(a)][int(b)]))
     else:
       mol1.AddBond(int(a),int(b), Chem.rdchem.BondType.SINGLE)
     
-    if 1< edges[int(b)][int(a)] <6:
+    if 0< edges[int(b)][int(a)] <6:
       mol2.AddBond(int(a),int(b), decoder.get(edges[int(b)][int(a)]))
     else:
       mol2.AddBond(int(a),int(b), Chem.rdchem.BondType.SINGLE)
@@ -174,11 +174,13 @@ def make_discriminator(num_atoms):
   main = tf.keras.layers.concatenate([x_node,x_edge], axis = 1)
   main = tf.keras.layers.Dense(32, activation='relu')(main)
   output = tf.keras.layers.Dense(1, activation = 'sigmoid', name = 'label')(main)#binary classfication task with sigmoid as the activation
-
-  return keras.Model(
+  model = keras.Model(
     inputs = [nodes_tensor, edges_tensor],
     outputs = output
     )
+  model.compile(loss='binary_crossentropy', optimizer='adam')
+  
+  return model
 
 ##########################################################################
 
@@ -303,7 +305,7 @@ def train_batch(disc, gene, nodes, edges, noise_input_shape, EPOCH = 150, BATCHS
   BATHSZIE: desired batchsize
   
   plot_hist: wether to plot the summary of loss and accuracy during training
-  temp_result: wether to generate some results for observation within interval of epochs during training
+  temp_result: weather to generate some results for observation within interval of epochs during training
   
   Return:
   --------
@@ -322,8 +324,8 @@ def train_batch(disc, gene, nodes, edges, noise_input_shape, EPOCH = 150, BATCHS
   #nodes_temp, edges_temp = list(), list()
 
   #discriminator = make_discriminator(mol_length)
-  disc.compile(optimizer="adam",loss='binary_crossentropy',metrics='accuracy')
-  disc.trainable = False
+  #disc.compile(optimizer="adam",loss='binary_crossentropy',metrics='accuracy')
+  #disc.trainable = False
   #generator = make_generator(mol_length, noise_input_shape)
   #generator.compile(optimizer='adam',loss='binary_crossentropy',metrics='accuracy')
   gan = make_gan(disc, gene, mol_length, noise_input_shape)
